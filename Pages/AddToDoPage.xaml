@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="todolist_application.Pages.AddToDoPage"
+             Title="AddToDoPage">
+    <VerticalStackLayout Padding="20" Spacing="12">
+
+        <Entry x:Name="titleEntry"
+       Placeholder="Title"/>
+
+        <Entry x:Name="detailEntry"
+       Placeholder="Details"/>
+
+        <Button Text="Add Task"
+                Clicked="Add_Clicked"
+                Margin="0,6,0,0"/>
+
+    </VerticalStackLayout>
+</ContentPage>

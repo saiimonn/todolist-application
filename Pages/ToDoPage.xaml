@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="todolist_application.Pages.ToDoPage"
+             Title="ToDo">
+
+    <Grid>
+
+        <!-- ToDo List -->
+        <CollectionView x:Name="todoList"
+                        SelectionMode="Single"
+                        SelectionChanged="TodoList_SelectionChanged"
+                        ItemsLayout="VerticalList">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="White" Padding="10" Margin="5" Stroke="LightGray" StrokeThickness="1">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Text="{Binding item_name}"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+
+                            <Button Text="✔"
+                                    Grid.Column="1"
+                                    BackgroundColor="Transparent"
+                                    Clicked="Complete_Clicked"/>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+
+        <!-- Floating Add Button -->
+        <Button Text="+"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                FontSize="24"
+                BackgroundColor="#7B83EB"
+                TextColor="White"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20"
+                Clicked="Add_Clicked"/>
+
+    </Grid>
+
+</ContentPage>

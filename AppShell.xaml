@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="todolist_application.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:todolist_application"
-    Title="todolist_application">
+    xmlns:pages="clr-namespace:todolist_application.Pages"
+    x:Class="todolist_application.AppShell">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+
+        <Tab Title="ToDo" Icon="todo.png">
+            <ShellContent ContentTemplate="{DataTemplate pages:ToDoPage}" />
+        </Tab>
+
+        <Tab Title="Completed" Icon="check.png">
+            <ShellContent ContentTemplate="{DataTemplate pages:CompletedPage}" />
+        </Tab>
+
+        <Tab Title="Profile" Icon="profile.png">
+            <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
+        </Tab>
+
+    </TabBar>
 
 </Shell>
