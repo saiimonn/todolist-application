@@ -3,25 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="todolist_application.Pages.SignUpPage"
              Title="SignUpPage">
-    <VerticalStackLayout Padding="30" Spacing="15">
+    <VerticalStackLayout Padding="30"
+            Spacing="15">
 
         <Image HeightRequest="150"/>
 
         <Entry Placeholder="Username"/>
 
         <Entry Placeholder="Email"
-       Keyboard="Email"/>
+               Keyboard="Email"/>
 
         <Entry Placeholder="Password"
-       IsPassword="True"/>
+               IsPassword="True"/>
 
         <Entry Placeholder="Confirm Password"
-       IsPassword="True"/>
+               IsPassword="True"/>
 
         <Button Text="Sign Up"/>
 
         <Button Text="Back to Sign In"
-        Clicked="Back_Clicked"/>
+                Clicked="Back_Clicked"/>
 
     </VerticalStackLayout>
 </ContentPage>

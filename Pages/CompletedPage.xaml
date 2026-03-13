@@ -10,16 +10,38 @@
 
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <Border Padding="10" Margin="5" BackgroundColor="White" Stroke="LightGray" StrokeThickness="1">
+                <Border Padding="10"
+                        Margin="5"
+                        BackgroundColor="White"
+                        Stroke="LightGray"
+                        StrokeThickness="1">
                     <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="6" />
+                        <RoundRectangle CornerRadius="6"/>
                     </Border.StrokeShape>
-                    <Label Text="{Binding item_name}"
-                           LineBreakMode="WordWrap"
-                           MaxLines="2"
-                           VerticalOptions="Center"
-                           HorizontalOptions="StartAndExpand"
-                           Margin="0" />
+
+                    <Grid ColumnDefinitions="*, Auto"
+                          ColumnSpacing="15"
+                          Padding="0,0,20,0">
+
+                        <Label Grid.Column="0"
+                               Text="{Binding item_name}"
+                               LineBreakMode="WordWrap"
+                               MaxLines="2"
+                               VerticalOptions="Center"
+                               Margin="0"/>
+
+                        <Image Grid.Column="1"
+                               Source="trash.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               Aspect="AspectFit"
+                               VerticalOptions="Center">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Delete_Clicked"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                    </Grid>
                 </Border>
             </DataTemplate>
         </CollectionView.ItemTemplate>

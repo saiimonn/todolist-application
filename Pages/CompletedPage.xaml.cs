@@ -67,4 +67,32 @@ public partial class CompletedPage : ContentPage
             }
         }
     }
+    private async void Delete_Clicked(object sender, EventArgs e)
+    {
+        Image btn = sender as Image;
+        ToDoClass item = btn?.BindingContext as ToDoClass;
+
+        try
+        {
+            // Ask the user to confirm before deleting
+            bool answer = await DisplayAlert("Delete Task", $"Are you sure you want to delete '{item.item_name}'?", "Yes", "No");
+
+            if (answer)
+            {
+                await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (item != null)
+                    {
+                        if (DataService.CompletedItems.Contains(item))
+                            DataService.CompletedItems.Remove(item);
+                    }
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Delete_Clicked exception: {ex}");
+            _ = Application.Current?.MainPage?.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
 }

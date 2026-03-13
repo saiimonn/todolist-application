@@ -14,25 +14,51 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border BackgroundColor="White" Padding="10" Margin="5" Stroke="LightGray" StrokeThickness="1">
+                    <Border BackgroundColor="White"
+                            Padding="10"
+                            Margin="5"
+                            Stroke="LightGray"
+                            StrokeThickness="1">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="10" />
+                            <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <Label Text="{Binding item_name}"
                                    FontSize="16"
-                                   VerticalOptions="Center"/>
+                                   VerticalOptions="Center"
+                                   Grid.Column="0"/>
 
-                            <Button Text="✔"
-                                    Grid.Column="1"
-                                    BackgroundColor="Transparent"
-                                    Clicked="Complete_Clicked"/>
+                            <HorizontalStackLayout Grid.Column="1"
+                                                   Spacing="50"
+                                                   VerticalOptions="Center"
+                                                   Padding="0,0,20,0">
 
+                                <Image Source="trash.png"
+                                       BackgroundColor="Transparent"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       Aspect="AspectFit">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="Delete_Clicked"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+
+                                <Image Source="check.png"
+                                       BackgroundColor="Transparent"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       Aspect="AspectFit">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="Complete_Clicked"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+
+                            </HorizontalStackLayout>
                         </Grid>
                     </Border>
                 </DataTemplate>
