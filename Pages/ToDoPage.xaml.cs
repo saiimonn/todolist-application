@@ -30,8 +30,8 @@ public partial class ToDoPage : ContentPage
 
     private async void Complete_Clicked(object sender, EventArgs e)
     {
-        Button btn = sender as Button;
-        ToDoClass item = btn.BindingContext as ToDoClass;
+        Image btn = sender as Image;
+        ToDoClass item = btn?.BindingContext as ToDoClass;
         try
         {
             await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
@@ -51,6 +51,34 @@ public partial class ToDoPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Complete_Clicked exception: {ex}");
+            _ = Application.Current?.MainPage?.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+    private async void Delete_Clicked(object sender, EventArgs e)
+    {
+        Image btn = sender as Image;
+        ToDoClass item = btn?.BindingContext as ToDoClass;
+
+        try
+        {
+            // Ask the user to confirm before deleting
+            bool answer = await DisplayAlert("Delete Task", $"Are you sure you want to delete '{item.item_name}'?", "Yes", "No");
+
+            if (answer)
+            {
+                await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (item != null)
+                    {
+                        if (DataService.TodoItems.Contains(item))
+                            DataService.TodoItems.Remove(item);
+                    }
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Delete_Clicked exception: {ex}");
             _ = Application.Current?.MainPage?.DisplayAlert("Error", ex.Message, "OK");
         }
     }

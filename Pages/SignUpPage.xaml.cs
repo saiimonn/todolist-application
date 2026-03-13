@@ -6,4 +6,10 @@ public partial class SignUpPage : ContentPage
 	{
 		InitializeComponent();
 	}
+
+	private async void Back_Clicked(object sender, EventArgs e)
+	{
+		await Navigation.PopAsync();
+
+	}
 }
