@@ -11,6 +11,12 @@ public partial class ToDoPage : ContentPage
         todoList.ItemsSource = DataService.TodoItems;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await LoadActiveItemsAsync();
+    }
+
     private async void Add_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new AddToDoPage());
@@ -34,19 +40,21 @@ public partial class ToDoPage : ContentPage
         ToDoClass item = btn?.BindingContext as ToDoClass;
         try
         {
-            await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+            if (item is null)
             {
-                if (item != null)
-                {
-                    if (DataService.TodoItems.Contains(item))
-                        DataService.TodoItems.Remove(item);
+                return;
+            }
 
-                    item.status = "Completed";
+            var updateResult = await ApiService.UpdateStatusAsync(item.item_id, "inactive");
+            if (!updateResult.IsSuccess)
+            {
+                await DisplayAlert("Unable to complete", updateResult.Message, "OK");
+                return;
+            }
 
-                    if (!DataService.CompletedItems.Contains(item))
-                        DataService.CompletedItems.Add(item);
-                }
-            });
+            DataService.TodoItems.Remove(item);
+            item.status = "inactive";
+            DataService.CompletedItems.Add(item);
         }
         catch (Exception ex)
         {
@@ -61,25 +69,58 @@ public partial class ToDoPage : ContentPage
 
         try
         {
+            if (item is null)
+            {
+                return;
+            }
+
             // Ask the user to confirm before deleting
             bool answer = await DisplayAlert("Delete Task", $"Are you sure you want to delete '{item.item_name}'?", "Yes", "No");
 
             if (answer)
             {
-                await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+                var deleteResult = await ApiService.DeleteItemAsync(item.item_id);
+                if (!deleteResult.IsSuccess)
                 {
-                    if (item != null)
-                    {
-                        if (DataService.TodoItems.Contains(item))
-                            DataService.TodoItems.Remove(item);
-                    }
-                });
+                    await DisplayAlert("Delete failed", deleteResult.Message, "OK");
+                    return;
+                }
+
+                DataService.TodoItems.Remove(item);
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Delete_Clicked exception: {ex}");
             _ = Application.Current?.MainPage?.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task LoadActiveItemsAsync()
+    {
+        if (!DataService.IsSignedIn || DataService.CurrentUser is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var response = await ApiService.GetItemsAsync("active", DataService.CurrentUser.id);
+            if (!response.IsSuccess)
+            {
+                await DisplayAlert("Load Failed", response.Message, "OK");
+                return;
+            }
+
+            DataService.TodoItems.Clear();
+            foreach (var item in response.Items)
+            {
+                DataService.TodoItems.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
         }
     }
 }

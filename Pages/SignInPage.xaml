@@ -7,11 +7,13 @@
 
         <Image HeightRequest="150"/>
 
-        <Entry Placeholder="Email address"
-       Keyboard="Email"/>
+        <Entry x:Name="emailEntry"
+               Placeholder="Email address"
+               Keyboard="Email"/>
 
-        <Entry Placeholder="Password"
-       IsPassword="True"/>
+        <Entry x:Name="passwordEntry"
+               Placeholder="Password"
+               IsPassword="True"/>
 
         <Button Text="Sign In"
         Clicked="SignIn_Clicked"/>

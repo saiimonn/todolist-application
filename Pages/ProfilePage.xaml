@@ -7,6 +7,14 @@
 
         <Image HeightRequest="150"/>
 
+        <Label x:Name="nameLabel"
+               FontSize="18"
+               HorizontalOptions="Center"/>
+
+        <Label x:Name="emailLabel"
+               FontSize="14"
+               HorizontalOptions="Center"/>
+
         <Button Text="Sign Out"
         Clicked="SignOut_Clicked"
         BackgroundColor="Gray"/>

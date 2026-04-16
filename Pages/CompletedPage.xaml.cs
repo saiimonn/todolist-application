@@ -1,6 +1,5 @@
 using todolist_application.Services;
 using todolist_application.Models;
-using Microsoft.Maui.ApplicationModel;
 using System.Linq;
 
 namespace todolist_application.Pages;
@@ -11,6 +10,12 @@ public partial class CompletedPage : ContentPage
     {
         InitializeComponent();
         completedList.ItemsSource = DataService.CompletedItems;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await LoadCompletedItemsAsync();
     }
 
     private async void Item_Tapped(object sender, ItemTappedEventArgs e)
@@ -36,37 +41,6 @@ public partial class CompletedPage : ContentPage
             await Navigation.PushAsync(new EditCompletedPage(item));
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-
-        // Clean up any items that had their status changed while this page was not active.
-        // Use ToList() to avoid modifying the collection while enumerating.
-        var moved = DataService.CompletedItems.ToList();
-        foreach (var item in moved)
-        {
-            try
-            {
-                if (item.status == "Pending")
-                {
-                    if (!DataService.TodoItems.Contains(item))
-                        DataService.TodoItems.Add(item);
-
-                    if (DataService.CompletedItems.Contains(item))
-                        DataService.CompletedItems.Remove(item);
-                }
-                else if (item.status == "Deleted")
-                {
-                    if (DataService.CompletedItems.Contains(item))
-                        DataService.CompletedItems.Remove(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"CompletedPage OnAppearing cleanup exception: {ex}");
-            }
-        }
-    }
     private async void Delete_Clicked(object sender, EventArgs e)
     {
         Image btn = sender as Image;
@@ -74,25 +48,58 @@ public partial class CompletedPage : ContentPage
 
         try
         {
+            if (item is null)
+            {
+                return;
+            }
+
             // Ask the user to confirm before deleting
             bool answer = await DisplayAlert("Delete Task", $"Are you sure you want to delete '{item.item_name}'?", "Yes", "No");
 
             if (answer)
             {
-                await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+                var deleteResult = await ApiService.DeleteItemAsync(item.item_id);
+                if (!deleteResult.IsSuccess)
                 {
-                    if (item != null)
-                    {
-                        if (DataService.CompletedItems.Contains(item))
-                            DataService.CompletedItems.Remove(item);
-                    }
-                });
+                    await DisplayAlert("Delete failed", deleteResult.Message, "OK");
+                    return;
+                }
+
+                DataService.CompletedItems.Remove(item);
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Delete_Clicked exception: {ex}");
             _ = Application.Current?.MainPage?.DisplayAlert("Error", ex.Message, "OK");
+        }
+    }
+
+    private async Task LoadCompletedItemsAsync()
+    {
+        if (!DataService.IsSignedIn || DataService.CurrentUser is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var response = await ApiService.GetItemsAsync("inactive", DataService.CurrentUser.id);
+            if (!response.IsSuccess)
+            {
+                await DisplayAlert("Load Failed", response.Message, "OK");
+                return;
+            }
+
+            DataService.CompletedItems.Clear();
+            foreach (var item in response.Items)
+            {
+                DataService.CompletedItems.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
         }
     }
 }

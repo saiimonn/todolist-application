@@ -8,18 +8,26 @@
 
         <Image HeightRequest="150"/>
 
-        <Entry Placeholder="Username"/>
+        <Entry x:Name="firstNameEntry"
+               Placeholder="First Name"/>
 
-        <Entry Placeholder="Email"
+        <Entry x:Name="lastNameEntry"
+               Placeholder="Last Name"/>
+
+        <Entry x:Name="emailEntry"
+               Placeholder="Email"
                Keyboard="Email"/>
 
-        <Entry Placeholder="Password"
+        <Entry x:Name="passwordEntry"
+               Placeholder="Password"
                IsPassword="True"/>
 
-        <Entry Placeholder="Confirm Password"
+        <Entry x:Name="confirmPasswordEntry"
+               Placeholder="Confirm Password"
                IsPassword="True"/>
 
-        <Button Text="Sign Up"/>
+        <Button Text="Sign Up"
+                Clicked="SignUp_Clicked"/>
 
         <Button Text="Back to Sign In"
                 Clicked="Back_Clicked"/>

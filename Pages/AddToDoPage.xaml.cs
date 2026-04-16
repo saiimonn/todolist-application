@@ -13,15 +13,37 @@ public partial class AddToDoPage : ContentPage
 
     private async void Add_Clicked(object sender, EventArgs e)
     {
-        ToDoClass newItem = new ToDoClass
+        var title = titleEntry.Text?.Trim() ?? string.Empty;
+        var details = detailEntry.Text?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(details))
         {
-            item_name = titleEntry.Text,
-            item_description = detailEntry.Text,
-            status = "Pending"
-        };
+            await DisplayAlert("Required", "Please enter both title and details.", "OK");
+            return;
+        }
 
-        DataService.TodoItems.Add(newItem);
+        if (DataService.CurrentUser is null)
+        {
+            await DisplayAlert("Not signed in", "Please sign in before adding tasks.", "OK");
+            return;
+        }
 
-        await Navigation.PopAsync();
+        try
+        {
+            var response = await ApiService.AddItemAsync(title, details, DataService.CurrentUser.id);
+            if (!response.IsSuccess || response.Item is null)
+            {
+                await DisplayAlert("Add failed", response.Message, "OK");
+                return;
+            }
+
+            DataService.TodoItems.Add(response.Item);
+            await Navigation.PopAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
+        }
+
     }
 }
